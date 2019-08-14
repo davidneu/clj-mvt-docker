@@ -1,0 +1,76 @@
+#+title:   clj-mvt-docker
+#+startup: showall
+#+OPTIONS: toc:nil author:nil timestamp:nil
+#+PROPERTY: header-args :padline no
+
+* Overview
+This project provides instructions for installing Docker and Docker
+Compose on Ubuntu Linux as required by [[https://github.com/davidneu/clj-mvt-eg-docker][clj-mvt-eg-docker]] and other
+Docker based projects listed at [[https://github.com/davidneu/clj-mvts][clj-mvts]].
+
+* Install Docker
+1. Follow the instructions at
+   https://docs.docker.com/install/linux/docker-ce/ubuntu/ or
+   run
+   - $ ./docker-install.sh
+   to execute the script listed below.
+   #+begin_src sh :tangle install-docker.sh
+     #!/bin/sh
+
+     sudo apt-get remove docker docker-engine docker.io containerd runc
+
+     sudo apt-get update
+
+     sudo apt-get install \
+         apt-transport-https \
+         ca-certificates \
+         curl \
+         gnupg-agent \
+         software-properties-common
+
+     curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+
+     sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+
+     sudo apt-get update
+
+     sudo apt-get install docker-ce docker-ce-cli containerd.io
+   #+end_src
+2. Confirm that Docker works
+   - $ sudo docker run hello-world
+3. Follow the instructions at
+   https://docs.docker.com/install/linux/linux-postinstall/ or
+   run
+   - $ ./linux-postinstall.sh
+   to execute the script listed below.
+   #+begin_src sh :tangle linux-postinstall.sh
+   #!/bin/sh
+
+   sudo groupadd docker
+
+   sudo usermod -aG docker $USER
+   #+end_src
+4. Confirm that Docker works without sudo
+   - $ newgrp docker
+   - $ docker run hello-world
+
+* Install Docker Compose
+1. Follow the instructions at
+   https://docs.docker.com/compose/install/ or run
+   - $ ./install-docker-compose.sh
+   to execute the script listed below.
+   #+begin_src sh :tangle install-docker-compose.sh
+     #!/bin/sh
+
+     cd /tmp
+
+     docker_compose_version='1.24.1'
+
+     sudo curl -L "https://github.com/docker/compose/releases/download/$docker_compose_version/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+
+     sudo chmod +x /usr/local/bin/docker-compose
+
+     sudo curl -L https://raw.githubusercontent.com/docker/compose/1.24.1/contrib/completion/bash/docker-compose -o /etc/bash_completion.d/docker-compose
+   #+end_src
+2. Test the installation
+   - docker-compose --version
